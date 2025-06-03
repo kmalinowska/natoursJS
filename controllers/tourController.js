@@ -4,6 +4,15 @@ let tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, "utf-8")
 );
 
+exports.loadTourByID = (req, res, next, id) => {
+  const tour = tours.find(tour => tour.id === parseInt(id));
+  if (tour === undefined)
+    return res.status(404).json({status: 'not found'});
+  else
+    req.loadedTour = tour;
+    next();
+}
+
 exports.getAllTours = (req, res) => {
   console.log(req.requestTime);
   const responseBody = {
@@ -22,15 +31,10 @@ exports.getAllTours = (req, res) => {
 exports.getOneTour = (req, res) => {
   console.log(req.params);
 
-  const tour = tours.find(tour => tour.id === parseInt(req.params.id));
-
-  if (tour === undefined)
-    return res.status(404).json({status: 'not found'})
-
   const responseBody = {
     status: 'success',
     data: {
-      tour
+      tour: req.loadedTour
     }
   }
   res.status(200).json(responseBody);
@@ -47,11 +51,8 @@ exports.postAllTours = (req, res) => {
 }
 
 exports.updateTour = (req, res) => {
-  const tour = tours.find(tour => tour.id === parseInt(req.params.id));
-  if (tour === undefined) return res.status(404).json({ status: 'not found' });
-
-  const updatedTour = Object.assign(tour, req.body);
-  const tourIndex = tours.indexOf(tour);
+  const updatedTour = Object.assign(req.loadedTour, req.body);
+  const tourIndex = tours.indexOf(req.loadedTour);
   tours[tourIndex] = updatedTour;
 
   res.status(200).json({
@@ -63,10 +64,7 @@ exports.updateTour = (req, res) => {
 };
 
 exports.deleteTour = (req, res) => {
-  const tour = tours.find(tour => tour.id === parseInt(req.params.id));
-  if (tour === undefined) return res.status(404).json({status: 'not found'});
-
-  tours = tours.filter(t => t.id !== tour.id);
+  tours = tours.filter(t => t.id !== req.loadedTour.id);
 
   res.status(204).json({
     status: 'success',
