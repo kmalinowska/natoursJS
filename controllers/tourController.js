@@ -40,6 +40,14 @@ exports.getOneTour = (req, res) => {
   res.status(200).json(responseBody);
 }
 
+exports.checkBody = (req, res, next) => {
+  const {name, price} = req.body;
+  if (!name || !price)
+    return res.status(400).json({status: 'error', message: 'Bad request'});
+  else
+    next();
+}
+
 exports.postAllTours = (req, res) => {
   const newId = Math.floor(Math.random() * 10000) + 1;
   const newTour = Object.assign({}, req.body, {id: newId});
