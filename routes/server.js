@@ -13,16 +13,15 @@ async function setupDBConnection(user, pass) {
     '<password>',
     pass,
   );
-
   const clientOptions = {
     serverApi: { version: '1', strict: true, deprecationErrors: true },
   };
-
   try {
     await mongoose.connect(url, clientOptions);
     await mongoose.connection.db.admin().command({ ping: 1 });
     console.log('Connected to MongoDB');
-  } finally {
+  } catch (error) {
+    console.error('MongoDB connection error');
     await mongoose.disconnect();
   }
 }
