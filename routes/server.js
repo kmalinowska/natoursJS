@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+setupEnv();
 const app = require('../app');
 
-setupEnv();
 setupDBConnection(process.env.DB_USER, process.env.DB_PASS).catch(
   console.error,
 );
