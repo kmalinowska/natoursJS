@@ -1,13 +1,18 @@
 const Tour = require('./../models/tourModel');
 
+exports.aliasTopTour = (req, res, next) => {
+  req.url =
+    '/?limit=5&sort=-ratingsAverage,price&fields=ratingsAverage,price,name,difficulty,summary';
+  next();
+};
+
 exports.getAllTours = async (req, res) => {
   try {
+    console.log(req.query);
     const queryObj = structuredClone(req.query);
     //const queryObj = { ...req.query };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((field) => delete queryObj[field]);
-
-    console.log(req.query);
 
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
@@ -24,7 +29,7 @@ exports.getAllTours = async (req, res) => {
       const fields = req.query.fields.split(',').join(' ');
       query = query.select(fields);
     } else {
-      query = query.select('-___v');
+      query = query.select('-__v');
     }
 
     const page = parseInt(req.query.page) || 1;

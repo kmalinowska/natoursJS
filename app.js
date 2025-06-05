@@ -2,6 +2,7 @@ const fs = require('fs');
 const express = require('express');
 const res = require('express/lib/response');
 const app = express();
+app.set('query parser', 'extended');
 const morgan = require('morgan');
 
 const tourRouter = require('./routes/tourRoutes');
@@ -12,7 +13,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.use(express.json());
-app.set('query parser', 'extended');
 
 app.use(express.static(`${__dirname}/public`));
 
