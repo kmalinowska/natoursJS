@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -16,6 +17,7 @@ const tourSchema = new mongoose.Schema(
         3,
         'The tour name has too less characters! Minimum length must be more or equal than 3 characters.',
       ],
+      //validate: [validator.isAlpha, 'Tour name must only contains characters'],
     },
     slug: String,
     duration: {
